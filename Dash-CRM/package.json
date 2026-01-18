@@ -1,0 +1,7 @@
+{
+  "name": "dash-crm",
+  "private": true,
+  "scripts": {
+    "lint:json": "node scripts/lint-json.js"
+  }
+}
