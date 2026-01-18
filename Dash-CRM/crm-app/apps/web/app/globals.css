@@ -1,0 +1,43 @@
+﻿@import "tailwindcss";
+
+:root {
+  --color-shell: #f5f4f1;
+  --color-surface: #ffffff;
+  --color-elevated: #fbfbfa;
+  --color-ink: #15171b;
+  --color-muted: #6a7078;
+  --color-border: #e6e1d8;
+  --color-accent: #24c7da;
+  --color-accent-strong: #12a9bc;
+  --color-accent-soft: #e6f8fb;
+  --radius-card: 20px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  background: radial-gradient(circle at 10% 10%, #fefcf8 0%, #f5f4f1 45%, #f1f0ec 100%);
+  color: var(--color-ink);
+  font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: var(--font-display), ui-serif, serif;
+  letter-spacing: -0.01em;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}

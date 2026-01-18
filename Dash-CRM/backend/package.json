@@ -1,0 +1,14 @@
+{
+  "name": "ateliux-backend",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev -w @ateliux/api",
+    "start": "npm run start -w @ateliux/api",
+    "seed": "npm run seed -w @ateliux/api",
+    "build": "npm run build -w @ateliux/api"
+  }
+}

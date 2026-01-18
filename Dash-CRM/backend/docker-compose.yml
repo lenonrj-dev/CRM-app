@@ -1,0 +1,12 @@
+﻿services:
+  mongo:
+    image: mongo:7
+    container_name: ateliux-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: ateliux_crm
+volumes:
+  mongo_data:
