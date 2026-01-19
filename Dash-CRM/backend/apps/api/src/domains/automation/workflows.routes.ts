@@ -19,12 +19,12 @@ const conditionSchema = z.object({
 
 const actionSchema = z.object({
   type: z.enum(workflowActionValues),
-  payload: z.record(z.any()).default({}),
+  payload: z.record(z.string(), z.any()).default({}),
 });
 
 const triggerSchema = z.object({
   type: z.enum(workflowTriggerValues),
-  params: z.record(z.any()).optional(),
+  params: z.record(z.string(), z.any()).optional(),
 });
 
 const workflowSchema = z.object({

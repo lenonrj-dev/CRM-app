@@ -47,7 +47,7 @@ settingsRouter.get(
   requireAuth,
   requirePermission("users:read"),
   asyncHandler(async (req, res) => {
-    const invites = await Invite.find({ orgId: req.user!.orgId }).sort({ createdAt: -1 }).lean();
+    const invites = (await Invite.find({ orgId: req.user!.orgId }).sort({ createdAt: -1 }).lean()) as any[];
     res.json({
       items: invites.map((invite) => ({
         id: invite._id.toString(),
@@ -55,7 +55,7 @@ settingsRouter.get(
         email: invite.email,
         role: invite.role,
         status: resolveInviteStatus(invite),
-        expiresAt: invite.expiresAt.toISOString(),
+        expiresAt: new Date(invite.expiresAt).toISOString(),
         usedAt: invite.usedAt ? invite.usedAt.toISOString() : null,
         token: resolveInviteStatus(invite) === "PENDING" ? invite.token : undefined,
         createdAt: invite.createdAt.toISOString(),
@@ -117,7 +117,7 @@ settingsRouter.post(
         email: invite.email,
         role: invite.role,
         status: resolveInviteStatus(invite),
-        expiresAt: invite.expiresAt.toISOString(),
+        expiresAt: new Date(invite.expiresAt).toISOString(),
         usedAt: invite.usedAt ? invite.usedAt.toISOString() : null,
         token: invite.token,
         createdAt: invite.createdAt.toISOString(),
@@ -130,7 +130,7 @@ publicRouter.get(
   "/:token",
   asyncHandler(async (req, res) => {
     const tokenHash = hashToken(req.params.token);
-    const invite = await Invite.findOne({ tokenHash }).lean();
+    const invite = (await Invite.findOne({ tokenHash }).lean()) as any;
     if (!invite) throw notFound("Convite não encontrado");
     if (invite.usedAt) throw badRequest("Convite já utilizado");
     if (invite.expiresAt < new Date()) throw badRequest("Convite expirado");
@@ -145,7 +145,7 @@ publicRouter.get(
         email: invite.email,
         role: invite.role,
         status: resolveInviteStatus(invite),
-        expiresAt: invite.expiresAt.toISOString(),
+        expiresAt: new Date(invite.expiresAt).toISOString(),
         usedAt: invite.usedAt ? invite.usedAt.toISOString() : null,
         createdAt: invite.createdAt.toISOString(),
       },

@@ -21,7 +21,7 @@ export const defaultSecurityPolicy = {
 };
 
 export const getSecurityPolicy = async (orgId: string) => {
-  const existing = await SecurityPolicy.findOne({ orgId }).lean();
+  const existing = await SecurityPolicy.findOne({ orgId });
   if (existing) return existing;
   return SecurityPolicy.create({ orgId, ...defaultSecurityPolicy });
 };

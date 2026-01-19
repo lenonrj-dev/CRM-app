@@ -95,7 +95,7 @@ router.post(
       dealId: data.dealId,
       status: data.status ?? "DRAFT",
       items: data.items.map((item) => ({
-        catalogItemId: item.catalogItemId,
+        catalogItemId: item.catalogItemId as any,
         name: item.name,
         qty: item.qty,
         unitPrice: item.unitPrice,
@@ -158,7 +158,7 @@ router.patch(
 
     if (data.items) {
       proposal.items = data.items.map((item) => ({
-        catalogItemId: item.catalogItemId,
+        catalogItemId: item.catalogItemId as any,
         name: item.name,
         qty: item.qty,
         unitPrice: item.unitPrice,
@@ -172,7 +172,7 @@ router.patch(
     if (data.notes !== undefined) proposal.notes = data.notes;
     if (data.validUntil) proposal.validUntil = new Date(data.validUntil);
 
-    const discountType = data.discountType ?? proposal.discountType;
+    const discountType = (data.discountType ?? proposal.discountType) as (typeof discountTypeValues)[number];
     const discountValue = data.discountValue ?? proposal.discountValue;
     const { subtotal, total, approvalRequired } = calculateTotals({
       items: proposal.items,

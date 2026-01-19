@@ -1,5 +1,6 @@
-﻿import { Router } from "express";
+import { Router } from "express";
 import { z } from "zod";
+import { createdFromValues } from "@ateliux/shared";
 import { asyncHandler } from "../../utils/asyncHandler";
 import { requireAuth } from "../../middleware/requireAuth";
 import { requirePermission } from "../../middleware/requirePermission";
@@ -68,7 +69,7 @@ const trackSchema = z.object({
         .optional(),
       landingPage: z.string().optional(),
       referrer: z.string().optional(),
-      createdFrom: z.string().optional(),
+      createdFrom: z.enum(createdFromValues).optional(),
       timestamp: z.string().datetime().optional(),
     })
     .optional(),
@@ -83,7 +84,7 @@ router.post(
 
     if (data.entityType === "contact") {
       const contact = await Contact.findOne({ _id: data.entityId, orgId: req.user!.orgId });
-      if (!contact) throw badRequest("Contato não encontrado");
+      if (!contact) throw badRequest("Contato nao encontrado");
 
       contact.attribution = applyTouch(contact.attribution, data.touch ?? {});
       if (!contact.createdFrom && data.touch?.createdFrom) {
@@ -111,7 +112,7 @@ router.post(
           title: contact.title,
           companyId: contact.companyId?.toString(),
           ownerId: contact.ownerId?.toString(),
-          createdFrom: contact.createdFrom,
+          createdFrom: contact.createdFrom as any,
           attribution: contact.attribution as any,
           leadScore: contact.leadScore as any,
           createdAt: contact.createdAt.toISOString(),
@@ -149,7 +150,7 @@ router.post(
     }
 
     const deal = await Deal.findOne({ _id: data.entityId, orgId: req.user!.orgId });
-    if (!deal) throw badRequest("Oportunidade não encontrada");
+    if (!deal) throw badRequest("Oportunidade nao encontrada");
 
     deal.attribution = applyTouch(deal.attribution, data.touch ?? {});
     if (!deal.createdFrom && data.touch?.createdFrom) {
@@ -167,7 +168,7 @@ router.post(
       companyId: deal.companyId?.toString(),
       contactId: deal.contactId?.toString(),
       lostReason: deal.lostReason,
-      createdFrom: deal.createdFrom,
+      createdFrom: deal.createdFrom as any,
       attribution: deal.attribution as any,
       leadScore: deal.leadScore as any,
       createdAt: deal.createdAt.toISOString(),

@@ -55,7 +55,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const login = useCallback(async (email: string, password: string, twoFactorCode?: string) => {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"}/auth/login`,
+      `${process.env.NEXT_PUBLIC_API_URL?.trim() || "/api"}/auth/login`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -86,7 +86,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const register = useCallback(async (payload: { name: string; email: string; password: string; orgName: string }) => {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"}/auth/register`,
+      `${process.env.NEXT_PUBLIC_API_URL?.trim() || "/api"}/auth/register`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -112,7 +112,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const acceptInvite = useCallback(async (payload: { token: string; name: string; password: string }) => {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"}/invites/accept`,
+      `${process.env.NEXT_PUBLIC_API_URL?.trim() || "/api"}/invites/accept`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

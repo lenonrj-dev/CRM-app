@@ -29,7 +29,7 @@ export default function InvitePage() {
     const loadInvite = async () => {
       try {
         const response = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000"}/invites/${token}`,
+          `${process.env.NEXT_PUBLIC_API_URL?.trim() || "/api"}/invites/${token}`,
         );
         if (!response.ok) {
           const data = await response.json().catch(() => ({}));

@@ -26,8 +26,10 @@ const start = async () => {
   });
 };
 
-start().catch((error) => {
-  // eslint-disable-next-line no-console
-  console.error("Falha ao iniciar a API", error);
-  process.exit(1);
-});
+if (!process.env.VERCEL) {
+  start().catch((error) => {
+    // eslint-disable-next-line no-console
+    console.error("Falha ao iniciar a API", error);
+    process.exit(1);
+  });
+}

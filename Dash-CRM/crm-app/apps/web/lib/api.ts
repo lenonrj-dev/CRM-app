@@ -1,6 +1,6 @@
 import { clearTokens, getTokens, setTokens, type AuthTokens } from "./auth";
 
-const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000").replace(/\/$/, "");
+const API_URL = (process.env.NEXT_PUBLIC_API_URL?.trim() || "/api").replace(/\/$/, "");
 
 export type ApiFetchOptions = RequestInit & {
   skipAuth?: boolean;

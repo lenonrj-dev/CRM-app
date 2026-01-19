@@ -1,4 +1,4 @@
-﻿import type { Role, WorkflowAction, WorkflowCondition, WorkflowTriggerType } from "@ateliux/shared";
+import type { Role, WorkflowAction, WorkflowCondition, WorkflowTriggerType } from "@ateliux/shared";
 import { Workflow } from "./workflow.model";
 import { WorkflowRun } from "./workflowRun.model";
 import { Activity } from "../crm/activity.model";
@@ -52,16 +52,16 @@ const createSystemAudit = async (params: {
   initiatedBy?: { userId: string; role: Role };
 }) => {
   const { orgId, entity, entityId, summary, initiatedBy } = params;
-  const user = initiatedBy
-    ? { id: initiatedBy.userId, role: initiatedBy.role }
-    : await User.findOne({ orgId, role: "ADMIN" }).lean();
+  const fallbackUser = initiatedBy ? null : await User.findOne({ orgId, role: "ADMIN" }).lean();
+  const userId = initiatedBy?.userId ?? fallbackUser?._id?.toString();
+  const role = initiatedBy?.role ?? fallbackUser?.role;
 
-  if (!user) return;
+  if (!userId || !role) return;
 
   await AuditLog.create({
     orgId,
-    userId: initiatedBy ? initiatedBy.userId : user._id,
-    role: initiatedBy ? initiatedBy.role : user.role,
+    userId,
+    role,
     action: "UPDATE",
     entity,
     entityId,
@@ -89,7 +89,7 @@ const runAction = async (params: {
       const activity = await Activity.create({
         orgId,
         type: "TASK",
-        subject: String(data.subject ?? "Tarefa automática"),
+        subject: String(data.subject ?? "Tarefa automatica"),
         notes: data.notes ? String(data.notes) : undefined,
         dueDate,
         completed: false,
@@ -103,31 +103,31 @@ const runAction = async (params: {
     case "ASSIGN_OWNER": {
       const ownerId = await resolveSingleUserId(orgId, data.ownerId as string | undefined, data.ownerRole as Role);
       const entity = String(data.entity ?? "");
-      if (!ownerId) return "Nenhum responsável encontrado";
+      if (!ownerId) return "Nenhum responsavel encontrado";
 
       if (entity === "deal" && payload.dealId) {
         await Deal.updateOne({ _id: payload.dealId, orgId }, { ownerId });
-        return "Responsável da oportunidade definido";
+        return "Responsavel da oportunidade definido";
       }
       if (entity === "company" && payload.companyId) {
         await Company.updateOne({ _id: payload.companyId, orgId }, { ownerId });
-        return "Responsável da empresa definido";
+        return "Responsavel da empresa definido";
       }
       if (entity === "contact" && payload.contactId) {
         await Contact.updateOne({ _id: payload.contactId, orgId }, { ownerId });
-        return "Responsável do contato definido";
+        return "Responsavel do contato definido";
       }
       if (entity === "ticket" && payload.ticketId) {
         await Ticket.updateOne({ _id: payload.ticketId, orgId }, { assignedTo: ownerId });
-        return "Responsável do chamado definido";
+        return "Responsavel do chamado definido";
       }
-      return "Atribuição de responsável ignorada";
+      return "Atribuicao de responsavel ignorada";
     }
     case "CREATE_TICKET": {
       const ownerId = await resolveSingleUserId(orgId, data.ownerId as string | undefined, data.ownerRole as Role);
       const ticket = await Ticket.create({
         orgId,
-        title: String(data.title ?? "Chamado automático"),
+        title: String(data.title ?? "Chamado automatico"),
         description: data.description ? String(data.description) : undefined,
         status: data.status ?? "OPEN",
         priority: data.priority ?? "MEDIUM",
@@ -143,12 +143,12 @@ const runAction = async (params: {
         await Notification.create({
           orgId,
           userId: data.userId,
-          title: String(data.title ?? "Notificação"),
+          title: String(data.title ?? "Notificacao"),
           message: String(data.message ?? ""),
           entity: data.entity ?? payload.entity,
           entityId: data.entityId ?? payload.entityId,
         });
-        return "Notificação criada";
+        return "Notificacao criada";
       }
 
       const users = await resolveUsersByRole(orgId, data.role as Role);
@@ -157,14 +157,14 @@ const runAction = async (params: {
           Notification.create({
             orgId,
             userId: user._id,
-            title: String(data.title ?? "Notificação"),
+            title: String(data.title ?? "Notificacao"),
             message: String(data.message ?? ""),
             entity: data.entity ?? payload.entity,
             entityId: data.entityId ?? payload.entityId,
           }),
         ),
       );
-      return `Notificação enviada para ${users.length} usuários`;
+      return `Notificacao enviada para ${users.length} usuarios`;
     }
     case "UPDATE_DEAL_STAGE": {
       if (!payload.dealId) return "Nenhuma oportunidade para atualizar";
@@ -172,7 +172,7 @@ const runAction = async (params: {
       return "Etapa da oportunidade atualizada";
     }
     default:
-      return "Ação ignorada";
+      return "Acao ignorada";
   }
 };
 
@@ -192,7 +192,7 @@ const executeWorkflow = async (params: {
       workflowId: workflow._id,
       status: "SKIPPED",
       triggerEvent: JSON.stringify({ triggerType, payload }),
-      result: "Condições não atendidas",
+      result: "Condicoes nao atendidas",
       executedAt: new Date(),
     });
     await emitEvent({

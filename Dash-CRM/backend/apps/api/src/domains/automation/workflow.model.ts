@@ -1,4 +1,4 @@
-﻿import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 type WorkflowDocument = {
   orgId: mongoose.Types.ObjectId;
@@ -20,8 +20,8 @@ const WorkflowSchema = new Schema<WorkflowDocument>(
     description: { type: String },
     enabled: { type: Boolean, default: false },
     trigger: { type: Schema.Types.Mixed, required: true },
-    conditions: { type: [Schema.Types.Mixed], default: [] },
-    actions: { type: [Schema.Types.Mixed], default: [] },
+    conditions: { type: [Schema.Types.Mixed as any], default: [] },
+    actions: { type: [Schema.Types.Mixed as any], default: [] },
     createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
   },
   { timestamps: true },

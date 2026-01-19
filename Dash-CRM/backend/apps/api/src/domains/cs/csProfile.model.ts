@@ -1,4 +1,4 @@
-﻿import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 type OnboardingItem = {
   title: string;
@@ -33,7 +33,7 @@ const CustomerSuccessProfileSchema = new Schema<CustomerSuccessProfileDocument>(
     companyId: { type: Schema.Types.ObjectId, ref: "Company", required: true },
     lifecycleStage: { type: String, required: true },
     healthScore: { type: Number, required: true },
-    healthBreakdown: { type: [Schema.Types.Mixed], default: [] },
+    healthBreakdown: { type: [Schema.Types.Mixed as any], default: [] },
     ownerId: { type: Schema.Types.ObjectId, ref: "User" },
     onboardingChecklist: { type: [OnboardingItemSchema], default: [] },
   },

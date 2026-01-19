@@ -39,7 +39,7 @@ router.get(
 );
 
 const testSchema = z.object({
-  payload: z.record(z.any()).optional(),
+  payload: z.record(z.string(), z.any()).optional(),
 });
 
 router.post(
@@ -70,7 +70,7 @@ router.post(
     await runWorkflowOnce({
       orgId: req.user!.orgId,
       workflowId: workflow._id.toString(),
-      triggerType: workflow.trigger?.type ?? "LEAD_CREATED",
+      triggerType: (workflow.trigger?.type ?? "LEAD_CREATED") as any,
       payload,
       initiatedBy: { userId: req.user!.id, role: req.user!.role },
     });
